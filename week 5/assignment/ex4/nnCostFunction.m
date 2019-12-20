@@ -62,25 +62,42 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-%%%%%%%%%%%%%%%%%%%%%%%		Part 1 - Feedforward	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% =========================================================================
 
-	a1 = X;
-	a1 = [ones(m, 1), a1];
-	z2 = Theta1 * a1';
-	a2 = sigmoid(z2);
-	a2 = a2';
-	a2 = [ones(size(a2, 1), 1), a2];
-	z3 = Theta2 * a2';
-	a3 = sigmoid(z3);
-	hx = a3';
+	X = [ones(m, 1) X];
 
-	for i = 1 : m,
-		for k = 1 : num_labels,
-			J = J + ( ( (-(y(i) == k)) * (log(hx(i, k))) ) - ( (1 - ( y(i) == k)) * (log(1 - hx(i, k))) ) );
-		end;
+	for i=1:m
+    	% activations for each layer
+	    a1 = X(i,:)';
+	    z2 = Theta1 * a1;
+	    a2 = [1; sigmoid(z2)];
+	    z3 = Theta2 * a2;
+	    a3 = sigmoid(z3);
+		  
+		% final layer activation is output vector
+	    h = a3;
+
+	    % create a boolean vector from a numeric label
+	    yVec = (1:num_labels)' == y(i);
+	    J = J + sum(-yVec .* log(h) - (1 - yVec) .* log(1 - h));
+
+	    % backpropagation
+	    delta3 = a3 - yVec;
+	    delta2 = Theta2' * delta3 .* (a2 .* (1 - a2));
+	    Theta2_grad = Theta2_grad + delta3 * a2';
+	    Theta1_grad = Theta1_grad + delta2(2:end) * a1';
 	end;
 
-	J = (1/m) * J;
+	% scaling cost function and gradients
+	J = J / m;
+	Theta1_grad = Theta1_grad / m;
+	Theta2_grad = Theta2_grad / m;
+
+	%	----------------------------------------------------
+
+	%	regularization
+
+	%J = J + (lambda / (2 * m)) * (sumsq(Theta1(:, 2:end)(:)) + sumsq(Theta2(:, 2:end)(:)));		-- single line me regularize
 
 	regJ = 0;
 
@@ -98,40 +115,8 @@ Theta2_grad = zeros(size(Theta2));
 
 	J = J + ((lambda / (2 *m)) * regJ);
 
-% =========================================================================
-
-%%%%%%%%%%%%%%%%%%%%%%		backpropagation		%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
-	for t = 1 : m,
-
-		a_1 = X(t, :);
-		a_1 = [1, a_1];
-		z_2 = Theta1 * a_1';
-		a_2 = sigmoid(z_2);
-		a_2 = a_2';
-		a_2 = [1, a_2];
-		z_3 = Theta2 * a_2';
-		a_3 = sigmoid(z_3);
-		h_x = a_3';
-
-		p = zeros(num_labels, 1);
-
-		if(y(t) == num_labels),
-			p(1) = 1;
-		else
-			p(y(t)+1) = 1;
-		end;
-
-		delta_3 = ( a_3 - p );
-		delta_2 = (Theta2' * delta_3) .* (sigmoidGradient(a_2'));
-		delta_2 = delta_2(2:end);
-		Theta2_grad = Theta2_grad + (delta_3 * a_2);
-		Theta1_grad = Theta1_grad + (delta_2 * a_1);
-
-	end;
-
-	Theta2_grad = (1/m) * Theta2_grad;
-	Theta1_grad = (1/m) * Theta1_grad;
+	Theta1_grad = Theta1_grad + (lambda / m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
+	Theta2_grad = Theta2_grad + (lambda / m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

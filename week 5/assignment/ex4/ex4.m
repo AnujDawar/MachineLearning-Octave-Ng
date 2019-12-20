@@ -39,10 +39,10 @@ m = size(X, 1);
 sel = randperm(size(X, 1));
 sel = sel(1:100);
 
-%	displayData(X(sel, :));
+%	displayData(X(sel, :));		%	anuj
 
 fprintf('Program paused. Press enter to continue.\n');
-%	pause;
+pause;
 
 
 %% ================ Part 2: Loading Parameters ================
@@ -74,8 +74,8 @@ fprintf('\nFeedforward Using Neural Network ...\n')
 % Weight regularization parameter (we set this to 0 here).
 lambda = 0;
 
-%	J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
-%                   num_labels, X, y, lambda);
+J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
+	num_labels, X, y, lambda);
 
 fprintf(['Cost at parameters (loaded from ex4weights): %f '...
          '\n(this value should be about 0.287629)\n'], J);
@@ -93,8 +93,8 @@ fprintf('\nChecking Cost Function (w/ Regularization) ... \n')
 % Weight regularization parameter (we set this to 1 here).
 lambda = 1;
 
-%	J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
-%                   num_labels, X, y, lambda);
+	J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
+                   num_labels, X, y, lambda);
 
 fprintf(['Cost at parameters (loaded from ex4weights): %f '...
          '\n(this value should be about 0.383770)\n'], J);
@@ -128,11 +128,11 @@ pause;
 
 fprintf('\nInitializing Neural Network Parameters ...\n')
 
-%	initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
-%	initial_Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
+initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
+initial_Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
 
 % Unroll parameters
-%	initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
+initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
 
 
 %% =============== Part 7: Implement Backpropagation ===============
@@ -183,7 +183,7 @@ fprintf('\nTraining Neural Network... \n')
 
 %  After you have completed the assignment, change the MaxIter to a larger
 %  value to see how more training helps.
-options = optimset('MaxIter', 50);
+options = optimset('MaxIter', 400);
 
 %  You should also try different values of lambda
 lambda = 1;
