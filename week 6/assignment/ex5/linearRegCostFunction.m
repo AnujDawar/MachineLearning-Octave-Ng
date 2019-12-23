@@ -20,7 +20,7 @@ J = 0;
 %
 
 
-	J = (1 / (2 * m) * sum(((X * theta) - y) .^ 2) ) + ( lambda / (2*m) * sumsq(theta(2:end)) );
+	J = (1 / (2 * m) * sum(((X * theta) - y) .^ 2) ) + ( (lambda / (2*m)) * sum(theta(2:end) .^ 2) );
 
 	grad(1) = ((sum(((X * theta ) - y) .* X(:, 1))) / m);
 
