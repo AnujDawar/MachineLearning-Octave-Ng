@@ -24,8 +24,8 @@ idx = zeros(size(X,1), 1);
 	for i = 1:size(X, 1)
 		minVal = 9999999;
 		for j = 1:K
-			if minVal > sum(abs(X(i, :) - centroids(j, :)))
-				minVal = sum(abs(X(i, :) - centroids(j, :)));
+			if minVal > sum((X(i, :) - centroids(j, :)) .^ 2)
+				minVal = sum((X(i, :) - centroids(j, :)) .^ 2);
 				idx(i) = j;
 			end;
 		end;
